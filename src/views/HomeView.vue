@@ -9,6 +9,7 @@ export default {
       newRecipeMessage: "make a new recipe!",
       broken: "er er er idk whats going on",
       newProductParams: {},
+      currentProduct: {},
     };
   },
   created: function () {
@@ -27,6 +28,11 @@ export default {
         console.log("success", response.data);
         this.products.push(response.data);
       });
+    },
+    showProduct: function (product) {
+      console.log(product);
+      this.currentProduct = product;
+      document.querySelector("#product-details").showModal();
     },
   },
 };
@@ -58,7 +64,18 @@ export default {
         {{ "$" + product.price }}
         <br />
         <img :src="product.image_url" :alt="broken" />
+        <br />
+        <button @click="showProduct(product)">click for more info</button>
       </div>
+      <dialog id="product-details">
+        <form method="dialog">
+          <h1>Product Info</h1>
+          <p>name: {{ currentProduct.name }}</p>
+          <p>description: {{ currentProduct.description }}</p>
+          <p>price: {{ currentProduct.price }}</p>
+          <button>Close</button>
+        </form>
+      </dialog>
     </div>
   </div>
 </template>
