@@ -34,6 +34,19 @@ export default {
       this.currentProduct = product;
       document.querySelector("#product-details").showModal();
     },
+    updateProduct: function (product) {
+      var editProductParams = product;
+      axios.patch("http://localhost:3000/products/" + product.id + ".json", editProductParams).then((response) => {
+        console.log("success", response.data);
+      });
+    },
+    destroyProduct: function (product) {
+      axios.delete("http://localhost:3000/products/" + product.id + ".json").then((response) => {
+        console.log("succesfully deleted", response.data);
+        var index = this.products.indexOf(product);
+        this.products.splice(index, 1);
+      });
+    },
   },
 };
 </script>
@@ -63,16 +76,22 @@ export default {
         <br />
         {{ "$" + product.price }}
         <br />
-        <img :src="product.image_url" :alt="broken" />
+        <img id="image-product" :src="product.image_url" :alt="broken" />
         <br />
-        <button @click="showProduct(product)">click for more info</button>
+        <button id="info-button" @click="showProduct(product)">click for more info</button>
       </div>
       <dialog id="product-details">
         <form method="dialog">
           <h1>Product Info</h1>
-          <p>name: {{ currentProduct.name }}</p>
-          <p>description: {{ currentProduct.description }}</p>
-          <p>price: {{ currentProduct.price }}</p>
+          <p id="product-id">name:</p>
+          <input type="text" v-model="currentProduct.name" />
+          <p id="product-id">description:</p>
+          <input type="text" v-model="currentProduct.description" />
+          <p id="product-id">price:</p>
+          <input type="text" v-model="currentProduct.price" />
+          <br />
+          <button @click="updateProduct(currentProduct)">Update</button>
+          <button @click="destroyProduct(currentProduct)">Delete</button>
           <button>Close</button>
         </form>
       </dialog>
@@ -83,5 +102,30 @@ export default {
 <style>
 img {
   width: 250px;
+}
+#product-details {
+  border-color: brown;
+  border-width: thick;
+}
+#info-button {
+  background-color: brown;
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+}
+#image-product {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 5px;
+  width: 300px;
+}
+#product-id {
+}
+body {
+  background-color: rgb(196, 196, 196);
 }
 </style>
